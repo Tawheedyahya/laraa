@@ -1,0 +1,23 @@
+name: Auto-merge
+on:
+  push:
+    -first
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      -name: checkout code
+      uses: action/checkout@4
+      -name: setup git
+      run: |
+        git config user.name "Tawheedyahya"
+        git config user.email "tawheedyahya0@gmail.com"
+
+      -name: merge 
+      run : |
+        git fetch origin master
+        git checkout master
+        git merge --no-ff first -m "auto merge using action"
+        git push origin master
