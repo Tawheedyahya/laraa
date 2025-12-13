@@ -2,30 +2,27 @@ name: Auto-merge
 
 on:
   push:
-    branches:
-      - first   # triggers when you push to branch 'first'
+    branches-ignore:
+      - master   # ignore direct pushes to master
 
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout code
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # 2️⃣ Setup git
       - name: Setup Git
         run: |
-          git config user.name "Tawheedyahya"
-          git config user.email "tawheedyahya0@gmail.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      # 3️⃣ Merge first branch into master
-      - name: Merge into master
+      - name: Merge branch into master
         run: |
-          git fetch origin master
-          git checkout master
-          git merge --no-ff first -m "Auto-merge from first branch"
+          git fetch origin
+          git checkout -B master origin/master
+          git merge --no-ff ${{ github.ref_name }} -m "Auto-merge from ${{ github.ref_name }}"
           git push origin master
